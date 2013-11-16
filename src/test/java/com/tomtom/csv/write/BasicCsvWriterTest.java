@@ -67,4 +67,19 @@ public class BasicCsvWriterTest {
         }
     }
 
+    @Test
+    public void writeEntryContainingNullValues() throws IOException {
+
+        List<String> elements = Arrays.asList("some", "elements", null ,"in", "here");
+
+        try {
+            basicCsvWriter.write(elements);
+            fail("Previous call should thrown an exception due to null reference in elements to save list");
+        } catch (final NullPointerException npe) {
+
+        }
+
+
+    }
+
 }

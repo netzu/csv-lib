@@ -23,7 +23,11 @@ public class BasicCsvWriter {
         this.separator = separator;
     }
 
-
+    /**
+     * Method writes list of elements into the stream, separated by given separator.
+     * @param elements list of elements that will be saved into the file.
+     *
+     */
     public void write(final List<String> elements) {
 
         try {

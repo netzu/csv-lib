@@ -47,9 +47,9 @@ public class DictionaryCsvReaderFactoryTest {
                 return mockBasicCsvReader;
             }
 
-
-            DictionaryCsvReader getDictionaryCsvReaderInstance(final BasicCsvReader csvReader, final List<String> header) {
-                assertEquals(mockBasicCsvReader, csvReader);
+            @Override
+            DictionaryCsvReader getDictionaryCsvReaderInstance(final Iterator<List<String>> iterator, final List<String> header) {
+                assertEquals(mockIterator, iterator);
                 assertEquals(EXAMPLE_HEADER, header);
 
                 return mockDictionaryReader;
