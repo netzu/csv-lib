@@ -1,7 +1,5 @@
 package com.tomtom.csv.read.dictionary;
 
-import com.tomtom.csv.read.dictionary.DictionaryCsvReader;
-import com.tomtom.csv.read.dictionary.DictionaryCsvReaderFactory;
 import com.tomtom.csv.read.exception.DictionaryReaderException;
 import org.junit.Test;
 
@@ -16,7 +14,6 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 /**
  * Tests for Dictionary csv reader class.
  */
