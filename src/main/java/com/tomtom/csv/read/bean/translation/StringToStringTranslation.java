@@ -8,4 +8,10 @@ public class StringToStringTranslation implements StringTranslation<String> {
     public String translate(String stringRepresentation) {
         return stringRepresentation;
     }
+
+
+    @Override
+    public String getNullRepresentation() {
+        return null;
+    }
 }

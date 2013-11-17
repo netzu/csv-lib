@@ -10,6 +10,9 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import static org.hamcrest.Matchers.*;
+
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -17,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static junit.framework.Assert.*;
 import static junit.framework.TestCase.*;
-import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 
 /**
  * BeanCsvReader test class.
@@ -246,6 +251,49 @@ public class BeanCsvReaderTest {
         }
     }
 
+    @Test
+    public void readNullsForObjectProperties() {
+
+        final InputStream is = getStreamToResource("bean/null_values.csv");
+        BeanCsvReader<SimpleBeanClass> reader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, SimpleBeanClass.class);
+
+        Iterator<SimpleBeanClass> it = reader.iterator();
+
+
+        assertThat(it.hasNext(), is(true));
+
+        SimpleBeanClass next = it.next();
+        assertThat(next, notNullValue());
+        assertThat(next.getLongAge(), nullValue());
+        assertThat(next.getMail(), nullValue());
+        assertThat(next.getIdentifier(), is(equalTo(44)));
+
+
+        assertThat(it.hasNext(), is(false));
+
+    }
+
+    @Test
+    public void readNullsForRawTypeProperties() {
+
+        final InputStream is = getStreamToResource("bean/null_values.csv");
+
+        BeanCsvReader<BeanClassWithRawTypes> beanCsvReader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, BeanClassWithRawTypes.class);
+
+        Iterator<BeanClassWithRawTypes> beanClassIterator = beanCsvReader.iterator();
+
+        assertThat(beanClassIterator.hasNext(), is(true));
+
+        final BeanClassWithRawTypes bean = beanClassIterator.next();
+
+        assertThat(bean.getId(), is(equalTo(44)));
+        assertThat(bean.getMail(), nullValue());
+        assertThat(bean.getAge(), is(equalTo(0L)));
+
+    }
+
+
+
 
     private InputStream getStreamToResource(final String resourceName) {
 
@@ -268,6 +316,12 @@ public class BeanCsvReaderTest {
 
                 throw new BeanReaderException("Error occur when translating " + Geometry.class.getName());
             }
+        }
+
+
+        @Override
+        public Geometry getNullRepresentation() {
+            return null;
         }
     }
 

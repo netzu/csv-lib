@@ -8,4 +8,10 @@ public class StringToIntegerTranslation implements StringTranslation<Integer> {
     public Integer translate(final String stringRepresentation) {
         return Integer.valueOf(stringRepresentation);
     }
+
+
+    @Override
+    public Integer getNullRepresentation() {
+        return null;
+    }
 }

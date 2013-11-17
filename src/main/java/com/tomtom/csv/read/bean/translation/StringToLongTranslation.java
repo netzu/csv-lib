@@ -8,4 +8,9 @@ public class StringToLongTranslation implements StringTranslation<Long> {
     public Long translate(final String stringRepresentation) {
         return Long.valueOf(stringRepresentation);
     }
+
+    @Override
+    public Long getNullRepresentation() {
+        return null;
+    }
 }

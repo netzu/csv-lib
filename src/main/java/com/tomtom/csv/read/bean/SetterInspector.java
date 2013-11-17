@@ -38,6 +38,7 @@ final class SetterInspector {
         try {
         for (final Field field : input.getClass().getDeclaredFields()) {
 
+
             if (isAnnotatedField(field)) {
 
                 final PropertyDescriptor propertyDescriptor = new PropertyDescriptor(field.getName(), input.getClass());

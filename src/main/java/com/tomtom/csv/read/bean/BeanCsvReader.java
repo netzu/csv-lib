@@ -12,12 +12,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Class for reading annotated java beans from csv.
+ * Class for reading annotated java beans from csv. For translation string to certain values it uses
+ * translation mechanism, which specified at creation. To specify contract for nulls you should specify, the null
+ * string indicator, by default reader takes 'null' string as null reference indicator.
  */
 public class BeanCsvReader<T> implements Iterable<T> {
 
+    private static final String DEFAULT_NUL_INDICATOR = "null";
     private final Iterator<Map<String, String>> dictionaryIterator;
     private final Class<T> clazz;
+    private String nullIndicator;
 
     private Map<Class<?>, StringTranslation> translationRegistry;
 
@@ -26,8 +30,13 @@ public class BeanCsvReader<T> implements Iterable<T> {
         this.dictionaryIterator = dictionaryIterator;
         this.clazz = clazz;
         translationRegistry = new HashMap<Class<?>, StringTranslation>();
+        this.nullIndicator = DEFAULT_NUL_INDICATOR;
     }
 
+    public void setNullIndicator(final String nullIndicator) {
+        this.nullIndicator = nullIndicator;
+
+    }
 
     @Override
     public Iterator<T> iterator() {
@@ -53,9 +62,9 @@ public class BeanCsvReader<T> implements Iterable<T> {
 
                 Constructor<T> constructor = clazz.getConstructor();
                 final Object object = constructor.newInstance();
+                Map<String, Method> setters = SetterInspector.getSetters(object);
 
                 for (final String csvField : row.keySet()) {
-                    Map<String, Method> setters = SetterInspector.getSetters(object);
 
                     Method setterMethod = setters.get(csvField);
 
@@ -75,8 +84,16 @@ public class BeanCsvReader<T> implements Iterable<T> {
                         throw new BeanCsvReaderException("No translation logic registered for type " + setterParameterType.getName());
                     }
 
+                    final String value = row.get(csvField);
 
-                    setterMethod.invoke(object, translation.translate(row.get(csvField)));
+                    if (value.equals(nullIndicator)) {
+                        setterMethod.invoke(object, translation.getNullRepresentation());
+
+                    } else {
+
+                        setterMethod.invoke(object, translation.translate(value));
+                    }
+
 
                 }
 

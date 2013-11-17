@@ -5,7 +5,13 @@ package com.tomtom.csv.read.bean.translation;
  */
 public class StringToDoubleTranslation implements StringTranslation<Double> {
     @Override
-    public Double translate(String stringRepresentation) {
+    public Double translate(final String stringRepresentation) {
         return Double.valueOf(stringRepresentation);
+    }
+
+
+    @Override
+    public Double getNullRepresentation() {
+        return null;
     }
 }

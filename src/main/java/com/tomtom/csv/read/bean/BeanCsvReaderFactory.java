@@ -1,9 +1,6 @@
 package com.tomtom.csv.read.bean;
 
-import com.tomtom.csv.read.bean.translation.StringToDoubleTranslation;
-import com.tomtom.csv.read.bean.translation.StringToIntegerTranslation;
-import com.tomtom.csv.read.bean.translation.StringToLongTranslation;
-import com.tomtom.csv.read.bean.translation.StringToStringTranslation;
+import com.tomtom.csv.read.bean.translation.*;
 import com.tomtom.csv.read.dictionary.DictionaryCsvReader;
 import com.tomtom.csv.read.dictionary.DictionaryCsvReaderFactory;
 
@@ -26,11 +23,11 @@ public class BeanCsvReaderFactory {
 
         result.registerTranslator(String.class, new StringToStringTranslation());
         result.registerTranslator(Long.class, new StringToLongTranslation());
-        result.registerTranslator(long.class, new StringToLongTranslation());
+        result.registerTranslator(long.class, new StringToRawLongTranslation());
         result.registerTranslator(Integer.class, new StringToIntegerTranslation());
-        result.registerTranslator(int.class, new StringToIntegerTranslation());
+        result.registerTranslator(int.class, new StringToRawIntegerTranslation());
         result.registerTranslator(Double.class, new StringToDoubleTranslation());
-        result.registerTranslator(double.class, new StringToDoubleTranslation());
+        result.registerTranslator(double.class, new StringToRawDoubleTranslation());
 
         return result;
     }
