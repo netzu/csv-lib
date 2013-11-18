@@ -47,6 +47,10 @@ public class BeanCsvReaderBuilder {
         return csvReader;
     }
 
+    /**
+     * Gives map of translation that will be used for bean reading.
+     * @return translation map.
+     */
     Map<Class<?>, StringTranslation> getTranslationMap() {
         return Collections.unmodifiableMap(this.translationMap);
     }
