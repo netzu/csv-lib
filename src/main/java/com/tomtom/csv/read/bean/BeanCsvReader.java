@@ -43,7 +43,7 @@ public class BeanCsvReader<T> implements Iterable<T> {
         return new BeanIterator();
     }
 
-    public <E> void  registerTranslator(final Class<E> clazz, final StringTranslation<E> translation) {
+    <E> void  registerTranslator(final Class<E> clazz, final StringTranslation<E> translation) {
         this.translationRegistry.put(clazz, translation);
     }
 

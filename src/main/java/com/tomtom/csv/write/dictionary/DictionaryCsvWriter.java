@@ -3,9 +3,7 @@ package com.tomtom.csv.write.dictionary;
 import com.tomtom.csv.write.BasicCsvWriter;
 import com.tomtom.csv.write.exception.CsvWriteException;
 
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 

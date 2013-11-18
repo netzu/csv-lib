@@ -1,6 +1,5 @@
 package com.tomtom.csv.write.dictionary;
 
-import com.google.common.base.Joiner;
 import com.tomtom.csv.write.BasicCsvWriter;
 import com.tomtom.csv.write.exception.CsvWriteException;
 import org.junit.Before;

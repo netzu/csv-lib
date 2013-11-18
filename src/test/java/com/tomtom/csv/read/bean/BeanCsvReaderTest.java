@@ -10,9 +10,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import static org.hamcrest.Matchers.*;
-
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -22,6 +19,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -38,7 +36,7 @@ public class BeanCsvReaderTest {
 
         final InputStream is = getStreamToResource("bean/simple_bean.csv");
 
-        BeanCsvReader<SimpleBeanClass> beanCsvReader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, SimpleBeanClass.class);
+        BeanCsvReader<SimpleBeanClass> beanCsvReader = prepareCsvReader(is, SEPARATOR, SimpleBeanClass.class);
 
         Iterator<SimpleBeanClass> beanClassIterator = beanCsvReader.iterator();
 
@@ -64,7 +62,7 @@ public class BeanCsvReaderTest {
 
         final InputStream is = getStreamToResource("bean/simple_bean.csv");
 
-        BeanCsvReader<BeanClassWithRawTypes> beanCsvReader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, BeanClassWithRawTypes.class);
+        BeanCsvReader<BeanClassWithRawTypes> beanCsvReader = prepareCsvReader(is, SEPARATOR, BeanClassWithRawTypes.class);
 
         Iterator<BeanClassWithRawTypes> beanClassIterator = beanCsvReader.iterator();
 
@@ -89,7 +87,7 @@ public class BeanCsvReaderTest {
     public void csvFileHasMoreFieldsThanClassAnnotatedFields() {
         final InputStream is = getStreamToResource("bean/more_fields.csv");
 
-        BeanCsvReader<SimpleBeanClass> beanCsvReader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, SimpleBeanClass.class);
+        BeanCsvReader<SimpleBeanClass> beanCsvReader = prepareCsvReader(is, SEPARATOR, SimpleBeanClass.class);
 
         Iterator<SimpleBeanClass> beanClassIterator = beanCsvReader.iterator();
 
@@ -114,7 +112,7 @@ public class BeanCsvReaderTest {
     public void beanClassHasMoreFieldsThanCsv() {
         final InputStream is = getStreamToResource("bean/simple_bean.csv");
 
-        BeanCsvReader<SimpleBeanClass2> beanCsvReader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, SimpleBeanClass2.class);
+        BeanCsvReader<SimpleBeanClass2> beanCsvReader = prepareCsvReader(is, SEPARATOR, SimpleBeanClass2.class);
 
         Iterator<SimpleBeanClass2> beanClassIterator = beanCsvReader.iterator();
 
@@ -139,7 +137,7 @@ public class BeanCsvReaderTest {
     public void checkAmountOfReadElements() {
         final InputStream is = getStreamToResource("bean/few_entries.csv");
 
-        BeanCsvReader<SimpleBeanClass> beanCsvReader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, SimpleBeanClass.class);
+        BeanCsvReader<SimpleBeanClass> beanCsvReader = prepareCsvReader(is, SEPARATOR, SimpleBeanClass.class);
 
         Iterator<SimpleBeanClass> beanClassIterator = beanCsvReader.iterator();
 
@@ -162,7 +160,7 @@ public class BeanCsvReaderTest {
 
         final InputStream is = getStreamToResource("bean/more_fields.csv");
 
-        BeanCsvReader<ExtendedSimpleBean> beanCsvReader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, ExtendedSimpleBean.class);
+        BeanCsvReader<ExtendedSimpleBean> beanCsvReader = prepareCsvReader(is, SEPARATOR, ExtendedSimpleBean.class);
 
         Iterator<ExtendedSimpleBean> beanClassIterator = beanCsvReader.iterator();
 
@@ -189,7 +187,7 @@ public class BeanCsvReaderTest {
 
         final InputStream is = getStreamToResource("bean/geometry.csv");
 
-        BeanCsvReader<SimpleBeanWithGeometry> reader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, SimpleBeanWithGeometry.class);
+        BeanCsvReader<SimpleBeanWithGeometry> reader = prepareCsvReader(is, SEPARATOR, SimpleBeanWithGeometry.class);
 
         Iterator<SimpleBeanWithGeometry> it = reader.iterator();
 
@@ -210,8 +208,12 @@ public class BeanCsvReaderTest {
 
         final InputStream is = getStreamToResource("bean/geometry.csv");
 
-        BeanCsvReader<SimpleBeanWithGeometry> reader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, SimpleBeanWithGeometry.class);
-        reader.registerTranslator(Geometry.class, new GeometryTransaction());
+        BeanCsvReaderBuilder builder = new BeanCsvReaderBuilder();
+
+        builder.withSeparator(SEPARATOR);
+        builder.withTranslation(Geometry.class, new GeometryTransaction());
+
+        BeanCsvReader<SimpleBeanWithGeometry> reader = builder.build(is, SimpleBeanWithGeometry.class);
 
         Iterator<SimpleBeanWithGeometry> it = reader.iterator();
 
@@ -236,7 +238,7 @@ public class BeanCsvReaderTest {
     @Test
     public void beanWithNoEmptyConstructor() {
         final InputStream is = getStreamToResource("bean/simple_bean.csv");
-        BeanCsvReader<NoEmptyContructorBean> reader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, NoEmptyContructorBean.class);
+        BeanCsvReader<NoEmptyContructorBean> reader = prepareCsvReader(is, SEPARATOR, NoEmptyContructorBean.class);
 
         Iterator<NoEmptyContructorBean> it = reader.iterator();
 
@@ -255,7 +257,7 @@ public class BeanCsvReaderTest {
     public void readNullsForObjectProperties() {
 
         final InputStream is = getStreamToResource("bean/null_values.csv");
-        BeanCsvReader<SimpleBeanClass> reader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, SimpleBeanClass.class);
+        BeanCsvReader<SimpleBeanClass> reader = prepareCsvReader(is, SEPARATOR, SimpleBeanClass.class);
 
         Iterator<SimpleBeanClass> it = reader.iterator();
 
@@ -278,7 +280,7 @@ public class BeanCsvReaderTest {
 
         final InputStream is = getStreamToResource("bean/null_values.csv");
 
-        BeanCsvReader<BeanClassWithRawTypes> beanCsvReader = new BeanCsvReaderFactory().getBeanCsvReader(is, SEPARATOR, BeanClassWithRawTypes.class);
+        BeanCsvReader<BeanClassWithRawTypes> beanCsvReader = prepareCsvReader(is, SEPARATOR, BeanClassWithRawTypes.class);
 
         Iterator<BeanClassWithRawTypes> beanClassIterator = beanCsvReader.iterator();
 
@@ -299,6 +301,14 @@ public class BeanCsvReaderTest {
 
         return this.getClass().getClassLoader().getResourceAsStream(resourceName);
 
+    }
+
+    private <T> BeanCsvReader<T> prepareCsvReader(final InputStream is, final String separator, final Class<T> clazz) {
+        BeanCsvReaderBuilder builder = new BeanCsvReaderBuilder();
+
+        builder.withSeparator(separator);
+
+        return builder.build(is, clazz);
     }
 
     private class GeometryTransaction implements StringTranslation<Geometry> {

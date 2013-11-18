@@ -2,8 +2,6 @@ package com.tomtom.csv.read.dictionary;
 
 
 import com.tomtom.csv.read.BasicCsvReader;
-import com.tomtom.csv.read.dictionary.DictionaryCsvReader;
-import com.tomtom.csv.read.dictionary.DictionaryCsvReaderFactory;
 import com.tomtom.csv.read.exception.HeaderReadException;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,9 +14,7 @@ import java.util.List;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class DictionaryCsvReaderFactoryTest {
 

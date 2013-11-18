@@ -2,13 +2,10 @@ package com.tomtom.csv.read.bean;
 
 import com.tomtom.csv.read.bean.exception.BeanInspectionException;
 
-import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
