@@ -1,5 +1,6 @@
-package com.tomtom.csv.read.bean;
+package com.tomtom.csv;
 
+import com.tomtom.csv.read.bean.CSVProperty;
 import com.tomtom.csv.read.bean.exception.BeanInspectionException;
 
 import java.beans.IntrospectionException;
@@ -14,7 +15,7 @@ import java.util.Map;
 /**
  * Class for lookup in objects for setters methods for annotated wit CSVProperty annotation fields in class.
  */
-final class SetterInspector {
+public final class SetterInspector {
 
     /**
      * Private constructor to prevent instantiation.
@@ -31,7 +32,7 @@ final class SetterInspector {
      * @param input object for inspection.
      * @return map of csv field name mapped on setter method.
      */
-    static Map<String, Method> getSetters(final Object input) {
+    public static Map<String, Method> getSetters(final Object input) {
 
         final Map<String, Method> result = new HashMap<String, Method>();
 
@@ -61,6 +62,8 @@ final class SetterInspector {
 
         return result;
     }
+
+
 
     private static boolean isAnnotatedField(final Field field) throws NoSuchFieldException {
         return field.isAnnotationPresent(CSVProperty.class);
