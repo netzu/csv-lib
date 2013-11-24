@@ -1,5 +1,6 @@
 package com.tomtom.csv.read.bean;
 
+import com.tomtom.csv.SetterInspector;
 import com.tomtom.csv.read.bean.exception.BeanCsvReaderException;
 import com.tomtom.csv.read.bean.exception.BeanInspectionException;
 import com.tomtom.csv.read.bean.translation.StringTranslation;
