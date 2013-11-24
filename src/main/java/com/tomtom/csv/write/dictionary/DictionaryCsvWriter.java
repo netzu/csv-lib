@@ -15,8 +15,15 @@ public class DictionaryCsvWriter {
     private final BasicCsvWriter basicWriter;
     private final List<String> header;
 
-
-    public DictionaryCsvWriter(final BasicCsvWriter basicWriter, final List<String> header) {
+    /**
+     * Protected constructor, prefered way to instantiation the DictionaryCsvWriter, by end user is with
+     * usage of DictionaryCsvWriterFactory.
+     *
+     * @param basicWriter instance of basic writer.
+     * @param header list of string represents the header.
+     *
+     */
+    DictionaryCsvWriter(final BasicCsvWriter basicWriter, final List<String> header) {
 
         this.basicWriter = basicWriter;
         this.header = header;
