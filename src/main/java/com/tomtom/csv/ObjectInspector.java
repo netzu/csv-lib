@@ -32,7 +32,7 @@ public final class ObjectInspector {
      * @param input object for inspection.
      * @return map of csv field name mapped on setter method.
      */
-    public static Map<String, Method> getSetters(final Object input) {
+    public static Map<String, Method> searchAnnotatedFieldsSetters(final Object input) {
 
         final Map<String, Method> result = new HashMap<String, Method>();
 
@@ -63,6 +63,34 @@ public final class ObjectInspector {
         return result;
     }
 
+    public static Map<String, Method> searchAnnotatedFieldsGetters(final Object input) {
+        final Map<String, Method> result = new HashMap<String, Method>();
+        try {
+            List<Field> annotatedFields = getAnnotatedFields(input);
+
+            for(final Field annotatedField : annotatedFields) {
+
+                final PropertyDescriptor propertyDescriptor = new PropertyDescriptor(annotatedField.getName(), input.getClass());
+
+                Method getter = propertyDescriptor.getReadMethod();
+
+                if (null == getter) {
+                    throw new BeanInspectionException("No getter method found for annotated class field " + annotatedField.getName());
+                }
+
+                String csvFieldName = getCSVFiledFromAnnotatedField(annotatedField);
+                result.put(csvFieldName, getter);
+
+            }
+
+        } catch (final NoSuchFieldException nse) {
+            throw new BeanInspectionException("Error occur when inspecting : " + input.getClass().getName(), nse);
+        } catch (final IntrospectionException ie) {
+            throw new BeanInspectionException("Error occur when inspecting : " + input.getClass().getName(), ie);
+        }
+
+        return result;
+    }
 
 
     private static boolean isAnnotatedField(final Field field) throws NoSuchFieldException {

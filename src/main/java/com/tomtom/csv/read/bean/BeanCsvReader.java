@@ -63,7 +63,7 @@ public class BeanCsvReader<T> implements Iterable<T> {
 
                 Constructor<T> constructor = clazz.getConstructor();
                 final Object object = constructor.newInstance();
-                Map<String, Method> setters = ObjectInspector.getSetters(object);
+                Map<String, Method> setters = ObjectInspector.searchAnnotatedFieldsSetters(object);
 
                 for (final String csvField : row.keySet()) {
 
