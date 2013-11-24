@@ -1,6 +1,6 @@
 package com.tomtom.csv.read.bean;
 
-import com.tomtom.csv.SetterInspector;
+import com.tomtom.csv.ObjectInspector;
 import com.tomtom.csv.read.bean.exception.BeanCsvReaderException;
 import com.tomtom.csv.read.bean.exception.BeanInspectionException;
 import com.tomtom.csv.read.bean.translation.StringTranslation;
@@ -63,7 +63,7 @@ public class BeanCsvReader<T> implements Iterable<T> {
 
                 Constructor<T> constructor = clazz.getConstructor();
                 final Object object = constructor.newInstance();
-                Map<String, Method> setters = SetterInspector.getSetters(object);
+                Map<String, Method> setters = ObjectInspector.getSetters(object);
 
                 for (final String csvField : row.keySet()) {
 

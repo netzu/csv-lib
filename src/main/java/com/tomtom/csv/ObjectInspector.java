@@ -15,12 +15,12 @@ import java.util.Map;
 /**
  * Class for lookup in objects for setters methods for annotated wit CSVProperty annotation fields in class.
  */
-public final class SetterInspector {
+public final class ObjectInspector {
 
     /**
      * Private constructor to prevent instantiation.
      */
-    private SetterInspector() {
+    private ObjectInspector() {
 
     }
 
