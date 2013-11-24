@@ -16,7 +16,8 @@ public class DictionaryCsvWriterFactory {
 
     /**
      * Constructor.
-     * @param os out stream where data will be pushed.
+     *
+     * @param os        out stream where data will be pushed.
      * @param separator separator that will be used.
      */
     public DictionaryCsvWriterFactory(final OutputStream os, final String separator) {
@@ -29,16 +30,27 @@ public class DictionaryCsvWriterFactory {
     /**
      * Creates an instance of DictionaryCsvWriter, that will be pushing data to the stream given in constructor
      * separated by sign, given in constructor, where expected header is passed as argument of this function.
-     * @param header list of string representing the header of the file.
+     *
+     * @param header      list of string representing the header of the file.
+     * @param writeHeader boolean flag that indicates should before writing any data to stream header will be
+     *                    written.
      * @return return ready to use instance od DictionaryCsvWriter.
      */
-    public DictionaryCsvWriter createCsvWriter(final List<String> header) {
+    public DictionaryCsvWriter createCsvWriter(final List<String> header, final boolean writeHeader) {
         final BasicCsvWriter basicWriter = prepareBasicCSVWriter();
 
+        if (writeHeader) {
+            writeHeader(header);
+        }
         return new DictionaryCsvWriter(basicWriter, header);
     }
 
     BasicCsvWriter prepareBasicCSVWriter() {
         return new BasicCsvWriter(this.os, this.separator);
+    }
+
+    private void writeHeader(final List<String> header) {
+        final BasicCsvWriter basicWriter = new BasicCsvWriter(this.os, this.separator);
+        basicWriter.write(header);
     }
 }

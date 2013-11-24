@@ -74,9 +74,9 @@ public class BeanCsvReader<T> implements Iterable<T> {
                     }
 
                     Class<?>[] parameterTypes = setterMethod.getParameterTypes();
-                    if (parameterTypes.length != 1) {
-                        throw new BeanInspectionException(String.format("Expected setter method with 1 parameter but got %s method name %s", parameterTypes.length, setterMethod.getName()));
-                    }
+//                    if (parameterTypes.length != 1) {
+//                        throw new BeanInspectionException(String.format("Expected setter method with 1 parameter but got %s method name %s", parameterTypes.length, setterMethod.getName()));
+//                    }
                     final Class<?> setterParameterType = parameterTypes[0];
 
                     final StringTranslation translation = translationRegistry.get(setterParameterType);
