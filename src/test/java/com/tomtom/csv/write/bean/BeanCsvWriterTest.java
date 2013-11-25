@@ -4,7 +4,6 @@ import com.tomtom.csv.read.bean.exception.BeanInspectionException;
 import com.tomtom.csv.write.bean.samples.BeanWithNoGetter;
 import com.tomtom.csv.write.bean.samples.SimpleBean;
 import com.tomtom.csv.write.dictionary.DictionaryCsvWriter;
-import com.tomtom.csv.write.exception.CsvWriteException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -20,6 +19,8 @@ import static org.mockito.Mockito.verify;
  * Test class for BeanCsvWriter.
  */
 public class BeanCsvWriterTest {
+
+    private static final String DEFAULT_NULL_LITERAL = "null";
 
     private DictionaryCsvWriter mockDictWriter;
 
@@ -37,7 +38,7 @@ public class BeanCsvWriterTest {
         simpleBean.setId(12L);
         simpleBean.setName("DummyName");
 
-        BeanCsvWriter<SimpleBean> beanWriter = new BeanCsvWriter<SimpleBean>(mockDictWriter);
+        BeanCsvWriter<SimpleBean> beanWriter = new BeanCsvWriter<SimpleBean>(mockDictWriter, DEFAULT_NULL_LITERAL);
         beanWriter.write(simpleBean);
 
 
@@ -57,7 +58,7 @@ public class BeanCsvWriterTest {
         bean.setId(44L);
         bean.setAge(123);
 
-        BeanCsvWriter<BeanWithNoGetter> writer = new BeanCsvWriter<BeanWithNoGetter>(mockDictWriter);
+        BeanCsvWriter<BeanWithNoGetter> writer = new BeanCsvWriter<BeanWithNoGetter>(mockDictWriter, DEFAULT_NULL_LITERAL);
 
         try {
             writer.write(bean);
@@ -67,21 +68,26 @@ public class BeanCsvWriterTest {
         }
     }
 
+    @Test
+    public void writeBeanWithNullProperty(){
+        final SimpleBean simpleBean = new SimpleBean();
 
-    private class MapMatcher extends ArgumentMatcher<Map<String, String>> {
+        simpleBean.setId(675L);
+        simpleBean.setName(null);
+        simpleBean.setAge(null);
 
-        @Override
-        public boolean matches(final Object o) {
-            if (!(o instanceof Map)) {
-                fail("Given argument is not a type of Map");
-            }
+        final String newNullLiteral = "Some_LITERAL";
 
-            Map<String, String> map = (Map) o;
+        final BeanCsvWriter<SimpleBean> writer = new BeanCsvWriter<SimpleBean>(mockDictWriter, newNullLiteral);
+        writer.write(simpleBean);
 
+        final Map<String, String> expectedMap = new HashMap<String, String>();
+        expectedMap.put("age", newNullLiteral);
+        expectedMap.put("id", "675");
+        expectedMap.put("name", newNullLiteral);
 
+        verify(mockDictWriter).write(expectedMap);
 
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
-        }
     }
 
 

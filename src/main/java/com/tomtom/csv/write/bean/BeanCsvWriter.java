@@ -6,7 +6,8 @@ import com.tomtom.csv.write.exception.CsvWriteException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class for writing annotated classes into csv file.
@@ -14,7 +15,7 @@ import java.util.*;
 public class BeanCsvWriter<T> {
 
     private final DictionaryCsvWriter dictWriter;
-    private final List<String> header;
+    private final String nullLiteral;
 
     /**
      * Constructor. When this is used, the order of storing items will be related to the order of retrieved annotated
@@ -22,40 +23,30 @@ public class BeanCsvWriter<T> {
      * dedicated class for this purpose, to separate user from the internals.
      *
      * @param dictionaryCsvWriter instance of dictionary writer.
+     * @param nullLiteral literal for handling null references.
      */
-    BeanCsvWriter(final DictionaryCsvWriter dictionaryCsvWriter) {
+    BeanCsvWriter(final DictionaryCsvWriter dictionaryCsvWriter, final String nullLiteral) {
         this.dictWriter = dictionaryCsvWriter;
-        header = new ArrayList<String>();
-    }
-
-    /**
-     * Constructor. This construction should be used when user is interested in string items in the stream in the given order.
-     * Direct construction of BeanCsvWriter is not recommended, it should be created, by dedicated class for this purpose, to separate user from the internals.
-     *
-     * @param dictionaryCsvWriter instance od dictionary writer.
-     * @param header              definition od header that will be decide about the order of the item stored to the stream.
-     */
-    BeanCsvWriter(final DictionaryCsvWriter dictionaryCsvWriter, final List<String> header) {
-        this(dictionaryCsvWriter);
-        this.header.addAll(header);
+        this.nullLiteral = nullLiteral;
     }
 
     public void write(final T bean) {
         try {
             Map<String, Method> getters = ObjectInspector.searchAnnotatedFieldsGetters(bean);
 
-            if (!isHeaderInitialized()) {
-                this.header.addAll(getters.keySet());
-            }
-            //LinedHashMap is used to keep the order.
-            Map<String, String> csvEntry = new LinkedHashMap<String, String>();
+            Map<String, String> csvEntry = new HashMap<String, String>();
 
-            for (final String fieldName : this.header) {
+            for (final String fieldName : getters.keySet()) {
 
                 Method getter = getters.get(fieldName);
                 Object invoke = getter.invoke(bean);
 
+                if (null == invoke) {
+                    invoke = this.nullLiteral;
+                }
+
                 csvEntry.put(fieldName, invoke.toString());
+
             }
 
             this.dictWriter.write(csvEntry);
@@ -66,10 +57,6 @@ public class BeanCsvWriter<T> {
         }
 
 
-    }
-
-    private boolean isHeaderInitialized() {
-        return !this.header.isEmpty();
     }
 
 }

@@ -50,7 +50,6 @@ public class DictionaryCsvWriter {
             elements.add(entry);
 
 
-
         }
 
         basicWriter.write(elements);
