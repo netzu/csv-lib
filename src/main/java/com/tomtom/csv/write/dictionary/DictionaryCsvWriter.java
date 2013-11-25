@@ -13,7 +13,7 @@ import java.util.Map;
 public class DictionaryCsvWriter {
 
     private final BasicCsvWriter basicWriter;
-    private final List<String> header;
+    private List<String> header;
 
     /**
      * Protected constructor, prefered way to instantiation the DictionaryCsvWriter, by end user is with
@@ -55,5 +55,9 @@ public class DictionaryCsvWriter {
         basicWriter.write(elements);
 
 
+    }
+
+    public void setHeader(final List<String> header) {
+        this.header = header;
     }
 }

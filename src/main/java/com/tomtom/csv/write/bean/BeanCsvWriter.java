@@ -6,7 +6,9 @@ import com.tomtom.csv.write.exception.CsvWriteException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,6 +18,7 @@ public class BeanCsvWriter<T> {
 
     private final DictionaryCsvWriter dictWriter;
     private final String nullLiteral;
+    private boolean lazyDictionaryWriterInitialization;
 
     /**
      * Constructor. When this is used, the order of storing items will be related to the order of retrieved annotated
@@ -23,16 +26,24 @@ public class BeanCsvWriter<T> {
      * dedicated class for this purpose, to separate user from the internals.
      *
      * @param dictionaryCsvWriter instance of dictionary writer.
-     * @param nullLiteral literal for handling null references.
+     * @param nullLiteral         literal for handling null references.
+     * @param lazyDictionaryWriterInitialization indicates that bean writer should extract header definition, according to first written object.
      */
-    BeanCsvWriter(final DictionaryCsvWriter dictionaryCsvWriter, final String nullLiteral) {
+    BeanCsvWriter(final DictionaryCsvWriter dictionaryCsvWriter, final String nullLiteral, final boolean lazyDictionaryWriterInitialization) {
         this.dictWriter = dictionaryCsvWriter;
         this.nullLiteral = nullLiteral;
+        this.lazyDictionaryWriterInitialization = lazyDictionaryWriterInitialization;
     }
 
     public void write(final T bean) {
         try {
             Map<String, Method> getters = ObjectInspector.searchAnnotatedFieldsGetters(bean);
+
+            if (lazyDictionaryWriterInitialization) {
+                List<String> extractedHeaderDefinition = new ArrayList<String>(getters.keySet());
+                this.dictWriter.setHeader(extractedHeaderDefinition);
+                lazyDictionaryWriterInitialization = false;
+            }
 
             Map<String, String> csvEntry = new HashMap<String, String>();
 
