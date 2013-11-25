@@ -1,7 +1,10 @@
 package com.tomtom.csv.write.bean;
 
+import com.tomtom.csv.read.bean.exception.BeanInspectionException;
+import com.tomtom.csv.write.bean.samples.BeanWithNoGetter;
 import com.tomtom.csv.write.bean.samples.SimpleBean;
 import com.tomtom.csv.write.dictionary.DictionaryCsvWriter;
+import com.tomtom.csv.write.exception.CsvWriteException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -45,6 +48,23 @@ public class BeanCsvWriterTest {
 
 
         verify(mockDictWriter).write(expectedMap);
+    }
+
+    @Test
+    public void writeBeanWithoutGetterForAnnotatedProperty() {
+        final BeanWithNoGetter bean = new BeanWithNoGetter();
+        bean.setName("some_name");
+        bean.setId(44L);
+        bean.setAge(123);
+
+        BeanCsvWriter<BeanWithNoGetter> writer = new BeanCsvWriter<BeanWithNoGetter>(mockDictWriter);
+
+        try {
+            writer.write(bean);
+            fail("Previous call should throw an exception due to non existing getter for property");
+        } catch (final BeanInspectionException bie) {
+
+        }
     }
 
 
