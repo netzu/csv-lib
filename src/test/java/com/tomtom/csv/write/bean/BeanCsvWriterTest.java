@@ -2,6 +2,8 @@ package com.tomtom.csv.write.bean;
 
 import com.tomtom.csv.read.bean.exception.BeanInspectionException;
 import com.tomtom.csv.write.bean.samples.BeanWithNoGetter;
+import com.tomtom.csv.write.bean.samples.HasNonAnnotatedField;
+import com.tomtom.csv.write.bean.samples.NoAnnotatedFields;
 import com.tomtom.csv.write.bean.samples.SimpleBean;
 import com.tomtom.csv.write.dictionary.DictionaryCsvWriter;
 import org.junit.Before;
@@ -71,7 +73,7 @@ public class BeanCsvWriterTest {
     }
 
     @Test
-    public void writeBeanWithNullProperty(){
+    public void writeBeanWithNullProperty() {
         final SimpleBean simpleBean = new SimpleBean();
 
         simpleBean.setId(675L);
@@ -165,6 +167,36 @@ public class BeanCsvWriterTest {
 
     }
 
+
+    @Test
+    public void writeClassWithSomeNonAnnotatedFields() {
+        final HasNonAnnotatedField bean = new HasNonAnnotatedField();
+        bean.setAge(78);
+        bean.setName("NAME");
+        bean.setId(6666L);
+
+        BeanCsvWriter<HasNonAnnotatedField> writer = new BeanCsvWriter<HasNonAnnotatedField>(mockDictWriter, DEFAULT_NULL_LITERAL, false);
+
+        writer.write(bean);
+        final Map<String, String> expectedMap = new HashMap<String, String>();
+        expectedMap.put("age", "78");
+        expectedMap.put("name", "NAME");
+
+        verify(mockDictWriter).write(expectedMap);
+    }
+
+    @Test
+    public void noAnnotatedFieldInBean() {
+        NoAnnotatedFields bean = new NoAnnotatedFields();
+        bean.setAge(78);
+        bean.setName("NAME");
+
+        BeanCsvWriter<NoAnnotatedFields> writer = new BeanCsvWriter<NoAnnotatedFields>(mockDictWriter, DEFAULT_NULL_LITERAL, false);
+
+        writer.write(bean);
+        verifyNoMoreInteractions(mockDictWriter);
+    }
+
     private class CollectionMather<E> extends ArgumentMatcher<List<E>> {
 
         private final Collection<E> expectedCollection;
@@ -184,7 +216,7 @@ public class BeanCsvWriterTest {
 
             for (final E item : expectedCollection) {
                 if (!givenCollection.contains(item)) {
-                   return false;
+                    return false;
                 }
             }
 

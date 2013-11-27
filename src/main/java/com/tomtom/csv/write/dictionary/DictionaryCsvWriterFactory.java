@@ -37,20 +37,15 @@ public class DictionaryCsvWriterFactory {
      * @return return ready to use instance od DictionaryCsvWriter.
      */
     public DictionaryCsvWriter createCsvWriter(final List<String> header, final boolean writeHeader) {
-        final BasicCsvWriter basicWriter = prepareBasicCSVWriter();
+        final BasicCsvWriter basicWriter = prepareBasicCSVWriter(this.os, this.separator);
 
         if (writeHeader) {
-            writeHeader(header);
+            basicWriter.write(header);
         }
         return new DictionaryCsvWriter(basicWriter, header);
     }
 
-    BasicCsvWriter prepareBasicCSVWriter() {
-        return new BasicCsvWriter(this.os, this.separator);
-    }
-
-    private void writeHeader(final List<String> header) {
-        final BasicCsvWriter basicWriter = new BasicCsvWriter(this.os, this.separator);
-        basicWriter.write(header);
+    BasicCsvWriter prepareBasicCSVWriter(final OutputStream os, final String separator) {
+        return new BasicCsvWriter(os, separator);
     }
 }

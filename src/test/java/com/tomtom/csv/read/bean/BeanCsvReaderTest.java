@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -294,6 +295,29 @@ public class BeanCsvReaderTest {
 
     }
 
+    @Test
+    public void readBeanWithNoAnnotatedFields() {
+        final InputStream is = getStreamToResource("bean/simple_bean.csv");
+
+        BeanCsvReader<BeanWithNoAnnotatedFields> beanCsvReader = prepareCsvReader(is, SEPARATOR, BeanWithNoAnnotatedFields.class);
+
+        Iterator<BeanWithNoAnnotatedFields> beanClassIterator = beanCsvReader.iterator();
+
+        final List<BeanWithNoAnnotatedFields> result = new ArrayList<BeanWithNoAnnotatedFields>();
+
+        while (beanClassIterator.hasNext()) {
+            result.add(beanClassIterator.next());
+        }
+
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+
+        final BeanWithNoAnnotatedFields sampleClass = result.get(0);
+
+        assertNull(sampleClass.getIdentifier());
+        assertNull(sampleClass.getLongAge());
+        assertNull(sampleClass.getMail());
+    }
 
 
 

@@ -23,11 +23,12 @@ public class BeanCsvWriter<T> {
     /**
      * Constructor. When this is used, the order of storing items will be related to the order of retrieved annotated
      * fields in first stored bean. Direct construction of BeanCsvWriter is not recommended, it should be created, by
-     * dedicated class for this purpose, to separate user from the internals.
+     * dedicated class for this purpose - BeanCsvWriterBuilder.
      *
      * @param dictionaryCsvWriter instance of dictionary writer.
      * @param nullLiteral         literal for handling null references.
      * @param lazyDictionaryWriterInitialization indicates that bean writer should extract header definition, according to first written object.
+     *                                           It mean that header in DictionaryWriter is set
      */
     BeanCsvWriter(final DictionaryCsvWriter dictionaryCsvWriter, final String nullLiteral, final boolean lazyDictionaryWriterInitialization) {
         this.dictWriter = dictionaryCsvWriter;
@@ -60,7 +61,10 @@ public class BeanCsvWriter<T> {
 
             }
 
-            this.dictWriter.write(csvEntry);
+            if (!csvEntry.isEmpty()) {
+                this.dictWriter.write(csvEntry);
+            }
+
         } catch (final IllegalAccessException iae) {
             throw new CsvWriteException("Error occur when trying to write bean", iae);
         } catch (final InvocationTargetException ite) {

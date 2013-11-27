@@ -4,7 +4,6 @@ import com.tomtom.csv.write.dictionary.DictionaryCsvWriter;
 import com.tomtom.csv.write.dictionary.DictionaryCsvWriterFactory;
 
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,13 +14,11 @@ public class BeanCsvWriterBuilder {
 
     private static final String DEFAULT_NULL_HANDLER = "null";
     private static final boolean DEFAULT_STORE_HEADER = false;
-    private static final String DEFAULT_SEPARATOR = "|";
 
 
     private final OutputStream os;
     private String nullLiteral = DEFAULT_NULL_HANDLER;
     private boolean storeHeader = DEFAULT_STORE_HEADER;
-    private String separator = DEFAULT_SEPARATOR;
     private List<String> header = Collections.<String>emptyList();
 
     /**
@@ -73,15 +70,22 @@ public class BeanCsvWriterBuilder {
      * @return ready to use instance of BeanCsvWriter.
      */
     public <T> BeanCsvWriter<T> build(final String separator) {
-        DictionaryCsvWriterFactory dictionaryFactory = new DictionaryCsvWriterFactory(this.os, separator);
+        DictionaryCsvWriterFactory dictionaryFactory = dictionaryCsvWriterFactory(this.os, separator);
 
-        boolean storeHeader = this.storeHeader && !this.header.isEmpty();
+        boolean shouldStoreHeader = this.storeHeader && !this.header.isEmpty();
 
-        DictionaryCsvWriter csvWriter = dictionaryFactory.createCsvWriter(this.header, storeHeader);
+        DictionaryCsvWriter csvWriter = dictionaryFactory.createCsvWriter(this.header, shouldStoreHeader);
 
-        BeanCsvWriter<T> beanCsvWriter = new BeanCsvWriter<T>(csvWriter, this.nullLiteral, !storeHeader);
+        BeanCsvWriter<T> beanCsvWriter = new BeanCsvWriter<T>(csvWriter, this.nullLiteral, !shouldStoreHeader);
 
         return beanCsvWriter;
     }
+
+
+    DictionaryCsvWriterFactory dictionaryCsvWriterFactory(final OutputStream os, final String separator) {
+        return new DictionaryCsvWriterFactory(os, separator);
+    }
+
+
 
 }
